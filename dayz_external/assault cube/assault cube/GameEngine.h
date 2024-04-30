@@ -53,8 +53,9 @@ struct World
 
 
 struct Camera
-{
+{   
     unsigned __int64 VirtualTable;
+
 
     CVector Right;
     CVector Up;

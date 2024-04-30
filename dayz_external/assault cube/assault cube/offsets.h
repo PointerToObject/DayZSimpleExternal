@@ -6,10 +6,7 @@
 
 
 namespace offsets {
-
 	uint64_t xWorld = 0x414CF70;
-
-	
 }
 
 

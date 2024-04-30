@@ -16,7 +16,7 @@ struct MenuFeature {
 		cout << title;
 
 	}
-	virtual void setValue(bool left) {
+	virtual void runAction(bool left) {
 
 	}
 };
@@ -31,8 +31,13 @@ struct MenuFeatureInt : MenuFeature {
 
 	}
 
+	bool setValue(int x) {
+		bool result = value != x;
+		value = x;
+		return result;
+	}
 
-	void setValue(bool left) override {
+	void runAction(bool left) override {
 		if (left) {
 			value--;
 		}
@@ -53,7 +58,14 @@ struct MenuFeatureInt64 : MenuFeature {
 		cout << "\t: " << value;
 
 	}
-	void setValue(bool left) override {
+
+	bool setValue(uint64_t x) {
+		bool result = value != x;
+		value = x;
+		return result;
+	}
+
+	void runAction(bool left) override {
 		if (left) {
 			value--;
 		}
@@ -72,7 +84,13 @@ struct MenuFeatureFloat : MenuFeature {
 
 	}
 
-	void setValue(bool left) override {
+	bool setValue(float x) {
+		bool result = value != x;
+		value = x;
+		return result;
+	}
+
+	void runAction(bool left) override {
 		if (left) {
 			value--;
 		}
@@ -90,7 +108,15 @@ struct MenuFeatureBool : MenuFeature {
 		cout << "\t\t: " << (value ? "true" : "false");
 
 	}
-	void setValue(bool left) override {
+	
+
+	bool setValue(bool x) {
+		bool result = value != x;
+		value = x;
+		return result;
+	}
+
+	void runAction(bool left) override {
 		value = !value;
 	}
 };
@@ -104,7 +130,7 @@ public:
 	ConsoleMenu() :
 		selectedIndex(0)
 	{
-
+		
 	}
 
 
@@ -154,12 +180,12 @@ public:
 		}
 
 		if (GetAsyncKeyState(VK_LEFT)) {
-			features[selectedIndex]->setValue(true);
+			features[selectedIndex]->runAction(true);
 			printMenu();
 		}
 
 		if (GetAsyncKeyState(VK_RIGHT)) {
-			features[selectedIndex]->setValue(false);
+			features[selectedIndex]->runAction(false);
 			printMenu();
 		}
 

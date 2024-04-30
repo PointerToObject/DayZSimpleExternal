@@ -16,8 +16,11 @@ MenuFeatureBool Brightness;
 MenuFeatureFloat BrightnessLevel;
 MenuFeatureBool NearTableCountBool;
 MenuFeatureInt iNearTableCount;
+MenuFeatureBool FarTableCountBool;
+MenuFeatureInt iFarTableCount;
 MenuFeatureBool BulletTable;
 MenuFeatureInt iBulletTable;
+
 
 void SetUpFt() {
 	Brightness.title = "Brightness";
@@ -28,9 +31,15 @@ void SetUpFt() {
 
 	NearTableCountBool.value = false;
 	BulletTable.value = false;
+	FarTableCountBool.value = false;
+
 
 	iNearTableCount.title = "Near Table";
 	iNearTableCount.value = 0;
+
+
+	iFarTableCount.title = "Far Table";
+	iFarTableCount.value = 0;
 
 	iBulletTable.title = "Bullet Table";
 	iBulletTable.value = 0;
@@ -47,13 +56,14 @@ int main() {
 	menu.addFeature(&Brightness);
 	menu.addFeature(&BrightnessLevel);
 	menu.addFeature(&iNearTableCount);
+	menu.addFeature(&iFarTableCount);
 	menu.addFeature(&iBulletTable);
 
 	CDispatcher* mem = CDispatcher::Get();
 	mem->Attach("DayZ_x64.exe");
 	uint64_t base = mem->GetModuleBase("DayZ_x64.exe");
 	uint64_t worldPtr = mem->ReadMemory<uint64_t>(base + xWorld);
-	World world = mem->ReadMemory<World>(worldPtr);
+	
 
 
 	SetConsoleTitle("z3n1th");
@@ -61,24 +71,20 @@ int main() {
 	menu.printMenu();
 
 	while (!GetAsyncKeyState(VK_NUMPAD0)) { 
-		int btc = mem->ReadMemory<int>(worldPtr + (offsetof(World, BulletTableCount))); // Bullet Table Count
-		int ntc = mem->ReadMemory<int>(worldPtr + (offsetof(World, NearTableCount)));   // Near Table Count
-		if (ntc > 1) {
-			iNearTableCount.value = ntc-1;
+		World world = mem->ReadMemory<World>(worldPtr);
+
+		if(iNearTableCount.setValue(world.NearTableCount - 1)){
 			menu.printMenu();
 		}
-		else {
-			iNearTableCount.value = 0;
+
+		if (iFarTableCount.setValue(world.FarTableCount)) {
 			menu.printMenu();
 		}
-		if (btc > 0) {
-			iBulletTable.value = btc;
+
+		if (iBulletTable.setValue(world.BulletTableCount)) {
 			menu.printMenu();
 		}
-		else {
-			iBulletTable.value = 0;
-			menu.printMenu();
-		}
+
 		if (Brightness.value) {
 			mem->WriteMemory<float>(worldPtr + offsetof(World, EyeAccom), BrightnessLevel.value);
 		}
@@ -95,6 +101,6 @@ int main() {
 
 
 //todo list
-// 1. fix the stuttering
-// 2. reduce the ammount of if statements 
+// 1. Add more features
+// 2. Find more features
 // 3. 
